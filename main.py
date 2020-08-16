@@ -137,18 +137,14 @@ def main():
         counts_start, counts_trans, counts_stop, counts_emiss, smoothing=smoothing)
 
     # convert to log-probabilities
-    print("Smoothed probabilities:\n", p_start, p_trans, p_stop, p_emiss)
     p_start, p_trans, p_stop, p_emiss = convert_to_log(p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
-    print("Smoothed log-probabilities:\n", p_start, p_trans, p_stop, p_emiss)
 
-    # do the conversion using your function
-    p_start, p_trans, p_stop, p_emiss = convert_to_log(p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
 
     #################################
     #   TESTING VITERBI ALGORITHM   #
     #################################
     test_sequence = test_set[0]
-    best_score, best_path = viterbi(test_sequence, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
+    best_score, best_path = viterbi(test_sequence, obs2i, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
 
     print(best_score)
     print(best_path)
@@ -162,7 +158,12 @@ def main():
 
     test_sequence = test_set[0]
 
-    fw_trellis, fw_ll, bw_trellis, bw_ll = forward_backward(test_sequence)
+    fw_trellis, fw_ll, bw_trellis, bw_ll = forward_backward(test_sequence,
+                                                            obs2i,
+                                                            p_start=p_start,
+                                                            p_trans=p_trans,
+                                                            p_stop=p_stop,
+                                                            p_emiss=p_emiss)
 
     print(test_sequence)
     print(fw_trellis)

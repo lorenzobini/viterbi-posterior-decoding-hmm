@@ -21,7 +21,7 @@ def logsum_pair(logx, logy):
         return logy + np.log1p(np.exp(logx - logy))
 
 
-def forward(sequence, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
+def forward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Compute Forward probabilities.
     Note: all probabilities should be log-probabilities.
@@ -56,7 +56,7 @@ def forward(sequence, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     return trellis, log_likelihood
 
 
-def backward(sequence, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
+def backward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Compute Backward probabilities.
     Note: all probabilities should be log-probabilities.
@@ -92,7 +92,7 @@ def backward(sequence, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     return trellis, log_likelihood
 
 
-def forward_backward(sequence):
+def forward_backward(sequence, obs2i, p_start, p_trans, p_stop, p_emiss):
     """
     Compute forward and backward probabilities.
     Return:
@@ -101,8 +101,8 @@ def forward_backward(sequence):
     - bw_trellis
     - bw_log_likelihood (the value of the "start" cell, not part of the trellis)
     """
-    fw_trellis, fw_ll = forward(sequence, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
-    bw_trellis, bw_ll = backward(sequence, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
+    fw_trellis, fw_ll = forward(sequence, obs2i, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
+    bw_trellis, bw_ll = backward(sequence, obs2i, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
     return fw_trellis, fw_ll, bw_trellis, bw_ll
 
 

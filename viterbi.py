@@ -1,6 +1,6 @@
 import numpy as np
 
-def viterbi(sequence, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
+def viterbi(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Compute the Viterbi sequence from log-probabilities
 
