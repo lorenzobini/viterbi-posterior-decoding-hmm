@@ -11,6 +11,8 @@ from posterior_decoding import posterior_decode, forward_backward
 '''
 CREDITS: part of the code used is courtesy of T. Deoskar
 '''
+
+
 def main():
     # read in test data
     test_data = """sleep cry laugh cry

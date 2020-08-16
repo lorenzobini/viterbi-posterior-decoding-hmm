@@ -24,7 +24,6 @@ def logsum_pair(logx, logy):
 def forward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Compute Forward probabilities.
-    Note: all probabilities should be log-probabilities.
 
     Return:
       - trellis with forward probabilities, excluding the "stop" cell
@@ -44,7 +43,7 @@ def forward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=No
             trellis[length - 1, state] = logsum_pair(p_start[state], p_emiss[obs2i[sequence[-1]], state])
     else:
         # recursion
-        trellis[0:length - 1, :], log_likelihood = forward(sequence[0:length - 1], p_start, p_trans, p_stop, p_emiss)
+        trellis[0:length - 1, :], log_likelihood = forward(sequence[0:length - 1], obs2i, p_start, p_trans, p_stop, p_emiss)
 
         for state in range(0, num_states):
             for prev_state in range(0, num_states):
@@ -59,7 +58,6 @@ def forward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=No
 def backward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Compute Backward probabilities.
-    Note: all probabilities should be log-probabilities.
 
     Return:
       - trellis with backward probabilities, excluding the "start" cell
@@ -79,7 +77,7 @@ def backward(sequence, obs2i, p_start=None, p_trans=None, p_stop=None, p_emiss=N
             trellis[length - 1, state] = p_stop[state]
     else:
         # recursion
-        trellis[1:, :], log_likelihood = backward(sequence[1:], p_start, p_trans, p_stop, p_emiss)
+        trellis[1:, :], log_likelihood = backward(sequence[1:], obs2i, p_start, p_trans, p_stop, p_emiss)
         for state in range(0, num_states):
             for next_state in range(0, num_states):
                 trellis[0, state] = logsum([trellis[0, state],
