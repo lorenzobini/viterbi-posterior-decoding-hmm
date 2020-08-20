@@ -2,9 +2,9 @@
 import numpy as np
 from collections import defaultdict
 from collections import namedtuple
-from helper import convert_to_log, normalize_all
-from viterbi import viterbi
-from posterior_decoding import posterior_decode, forward_backward
+from src.utilities.utilities import convert_to_log, normalize_all
+from src.viterbi import viterbi
+from src.posterior_decoding import posterior_decode, forward_backward
 
 
 
