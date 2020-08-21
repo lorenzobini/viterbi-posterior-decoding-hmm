@@ -27,8 +27,8 @@ class Model:
 
         for seq in training_set:
             for example in seq:
-                state_id = self.self.state2i[example.state]
-                obs_id = self.self.obs2i[example.obs]
+                state_id = self.state2i[example.state]
+                obs_id = self.obs2i[example.obs]
 
         self.num_states = len(self.state2i)
         self.num_observations = len(self.obs2i)
@@ -94,9 +94,9 @@ class Model:
                          p_trans=self.p_trans,
                          p_stop=self.p_stop,
                          p_emiss=self.p_emiss)
-            print("All good!")
+            print("Sanity check: passed. \n")
         except AssertionError as e:
-            print("There was a problem: %s" % str(e))
+            print("Sanity check: failed. Error: %s \n" % str(e))
 
         # normalize with smoothing
         smoothing = 0.1

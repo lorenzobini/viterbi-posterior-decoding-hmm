@@ -1,17 +1,7 @@
-
-
 from collections import namedtuple
-
 from src.viterbi import viterbi
 from src.posterior_decoding import posterior_decode, forward_backward
 from src.model import Model
-
-
-
-
-'''
-CREDITS: part of the code used is courtesy of T. Deoskar
-'''
 
 
 def main():
@@ -22,30 +12,35 @@ def main():
 
 
 
-    #################################
-    #   TESTING VITERBI ALGORITHM   #
-    #################################
+    #########################
+    #   VITERBI ALGORITHM   #
+    #########################
     test_sequence = test_set[0]
-    best_score, best_path = viterbi(test_sequence, obs2i, p_start=p_start, p_trans=p_trans, p_stop=p_stop, p_emiss=p_emiss)
+    best_score, best_path = viterbi(test_sequence,
+                                    model.obs2i,
+                                    p_start=model.p_start,
+                                    p_trans=model.p_trans,
+                                    p_stop=model.p_stop,
+                                    p_emiss=model.p_emiss)
 
     print(best_score)
     print(best_path)
 
-    i2state = {v: k for k, v in state2i.items()}
+    i2state = {v: k for k, v in model.state2i.items()}
     print([i2state[i] for i in best_path])
 
-    ##################################
-    #   TESTING POSTERIOR DECODING   #
-    ##################################
+    ##########################
+    #   POSTERIOR DECODING   #
+    ##########################
 
     test_sequence = test_set[0]
 
     fw_trellis, fw_ll, bw_trellis, bw_ll = forward_backward(test_sequence,
-                                                            obs2i,
-                                                            p_start=p_start,
-                                                            p_trans=p_trans,
-                                                            p_stop=p_stop,
-                                                            p_emiss=p_emiss)
+                                                            model.obs2i,
+                                                            p_start=model.p_start,
+                                                            p_trans=model.p_trans,
+                                                            p_stop=model.p_stop,
+                                                            p_emiss=model.p_emiss)
 
     print(test_sequence)
     print(fw_trellis)
@@ -53,7 +48,12 @@ def main():
     print(bw_trellis)
     print(bw_ll)
 
-    state_posteriors, best_sequence = posterior_decode(test_sequence, fw_trellis, bw_trellis, fw_ll, p_trans, p_emiss)
+    state_posteriors, best_sequence = posterior_decode(test_sequence,
+                                                       fw_trellis,
+                                                       bw_trellis,
+                                                       fw_ll,
+                                                       model.p_trans,
+                                                       model.p_emiss)
 
     print(state_posteriors)
     print(best_sequence)
