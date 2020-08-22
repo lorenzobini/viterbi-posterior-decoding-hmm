@@ -1,6 +1,6 @@
 import numpy as np
 from collections import defaultdict
-from src.utilities.utilities import convert_to_log, normalize_all
+from src.utils.utilities import convert_to_log, normalize_all
 
 
 class Model:

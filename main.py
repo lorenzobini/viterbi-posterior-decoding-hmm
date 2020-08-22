@@ -1,4 +1,6 @@
+import os
 from collections import namedtuple
+import numpy as np
 from src.viterbi import viterbi
 from src.posterior_decoding import posterior_decode, forward_backward
 from src.model import Model
@@ -11,90 +13,93 @@ def main():
     model.build_model(training_set, test_set)
 
 
-
     #########################
     #   VITERBI ALGORITHM   #
     #########################
-    test_sequence = test_set[0]
-    best_score, best_path = viterbi(test_sequence,
-                                    model.obs2i,
-                                    p_start=model.p_start,
-                                    p_trans=model.p_trans,
-                                    p_stop=model.p_stop,
-                                    p_emiss=model.p_emiss)
 
-    print(best_score)
-    print(best_path)
+    print("\n VITERBI PATH PREDICTION ---------------\n")
+    for test_sequence in test_set:
+        best_score, best_path = viterbi(test_sequence,
+                                        model.obs2i,
+                                        p_start=model.p_start,
+                                        p_trans=model.p_trans,
+                                        p_stop=model.p_stop,
+                                        p_emiss=model.p_emiss)
 
-    i2state = {v: k for k, v in model.state2i.items()}
-    print([i2state[i] for i in best_path])
+        i2state = {v: k for k, v in model.state2i.items()}
+
+        print('Sequence: ' + str(test_sequence))
+        print('Predicted best score: ' + str(best_score))
+        print('Predicted best path: ' + str([i2state[i] for i in best_path]) + '\n')
+
 
     ##########################
     #   POSTERIOR DECODING   #
     ##########################
 
-    test_sequence = test_set[0]
+    print("\n POSTERIOR DECODING PATH PREDICTION ---------------\n")
+    for test_sequence in test_set:
+        fw_trellis, fw_ll, bw_trellis, bw_ll = forward_backward(test_sequence,
+                                                                model.obs2i,
+                                                                p_start=model.p_start,
+                                                                p_trans=model.p_trans,
+                                                                p_stop=model.p_stop,
+                                                                p_emiss=model.p_emiss)
 
-    fw_trellis, fw_ll, bw_trellis, bw_ll = forward_backward(test_sequence,
-                                                            model.obs2i,
-                                                            p_start=model.p_start,
-                                                            p_trans=model.p_trans,
-                                                            p_stop=model.p_stop,
-                                                            p_emiss=model.p_emiss)
 
-    print(test_sequence)
-    print(fw_trellis)
-    print(fw_ll)
-    print(bw_trellis)
-    print(bw_ll)
+        state_posteriors, best_sequence = posterior_decode(test_sequence,
+                                                           fw_trellis,
+                                                           bw_trellis,
+                                                           fw_ll,
+                                                           model.p_trans,
+                                                           model.p_emiss)
 
-    state_posteriors, best_sequence = posterior_decode(test_sequence,
-                                                       fw_trellis,
-                                                       bw_trellis,
-                                                       fw_ll,
-                                                       model.p_trans,
-                                                       model.p_emiss)
+        print('Sequence: ' + str(test_sequence))
+        print('State posteriors: \n' + str(state_posteriors))
+        print('Predicted best path: ' + str([i2state[i] for i in best_path]) + '\n')
 
-    print(state_posteriors)
-    print(best_sequence)
-    print([i2state[i] for i in best_path])
 
 
 def load_data():
-    # read in test data
-    test_data = """sleep cry laugh cry
-    cry cry laugh sleep"""
 
-    def test_reader(test_lines):
-        for line in test_lines.splitlines():
-            yield line.split()
+    # paths
+    DATA_PATH = os.path.join(os.getcwd(), 'data') + os.sep
+    TRAIN_PATH = DATA_PATH + "train.txt"
+    TEST_PATH = DATA_PATH + "test.txt"
 
-    test_set = list(test_reader(test_data))
+    if(
+        not(
+            os.path.isfile(TRAIN_PATH) and
+            os.path.isfile(TEST_PATH)
+        )
+    ):
+        raise ImportError("Training and/or test sets not found.")
+    else:
+        train_data = open(TRAIN_PATH, "r")
+        test_data = open(TEST_PATH, "r")
 
-    # read in train data
-    train_data = """laugh/happy cry/bored cry/hungry sleep/happy
-    cry/bored laugh/happy cry/happy sleep/bored
-    cry/hungry cry/bored sleep/happy"""
+        # processing training set ---------------------------------
 
-    # define a Observation-State pair class
-    Pair = namedtuple("Pair", ["obs", "state"])
-    Pair.__repr__ = lambda x: x.obs + "/" + x.state
+        def train_reader(train_lines):
+            for line in train_lines:
+                yield [Pair(*pair.split("/")) for pair in line.split()]
 
-    def train_reader(train_lines):
-        for line in train_data.splitlines():
-            yield [Pair(*pair.split("/")) for pair in line.split()]
+        # defining a Observation-State pair class
+        Pair = namedtuple("Pair", ["obs", "state"])
+        Pair.__repr__ = lambda x: x.obs + "/" + x.state
 
-    training_set = list(train_reader(train_data))
+        training_set = list(train_reader(train_data))
 
-    # print the results
-    print("test set (observations):")
-    for seq in test_set:
-        print(seq)
-    print("\ntraining set (observation/state pairs):")
-    for seq in training_set:
-        print(seq)
+        # processing test set --------------------------------------
+        def test_reader(test_lines):
+            for line in test_lines:
+                yield line.split()
+
+        test_set = list(test_reader(test_data))
+
+        print("Training and test sets imported successfully.")
+
 
     return test_set, training_set
-
 
 main()
