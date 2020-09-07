@@ -1,0 +1,9 @@
+laugh/happy*1.0
+laugh/bored*0.0
+laugh/hungry*0.0
+sleep/happy*0.4
+sleep/bored*0.4
+sleep/hungry*0.2
+cry/happy*0.1
+cry/bored*0.4
+cry/hungry*0.5

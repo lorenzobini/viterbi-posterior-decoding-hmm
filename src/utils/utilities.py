@@ -4,9 +4,6 @@ import math
 def convert_to_log(p_start=None, p_trans=None, p_stop=None, p_emiss=None):
     """
     Convert all probabilities to log-probabilities
-
-    Important: only run this function with normal probabilities as input!
-    If you run this twice, things will break.
     """
 
     # converting p_start

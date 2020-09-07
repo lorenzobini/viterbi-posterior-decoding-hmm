@@ -1,11 +1,3 @@
-laugh/happy
-cry/bored
-cry/hungry
-sleep/happy
-cry/bored
-laugh/happy
-cry/happy
-sleep/bored
-cry/hungry
-cry/bored
-sleep/happy
+laugh/happy cry/bored cry/hungry sleep/happy
+cry/bored laugh/happy cry/happy sleep/bored
+cry/hungry cry/bored sleep/happy sleep/happy

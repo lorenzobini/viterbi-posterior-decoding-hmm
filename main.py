@@ -1,6 +1,5 @@
 import os
 from collections import namedtuple
-import numpy as np
 from src.viterbi import viterbi
 from src.posterior_decoding import posterior_decode, forward_backward
 from src.model import Model
@@ -46,7 +45,6 @@ def main():
                                                                 p_stop=model.p_stop,
                                                                 p_emiss=model.p_emiss)
 
-
         state_posteriors, best_sequence = posterior_decode(test_sequence,
                                                            fw_trellis,
                                                            bw_trellis,
@@ -56,8 +54,7 @@ def main():
 
         print('Sequence: ' + str(test_sequence))
         print('State posteriors: \n' + str(state_posteriors))
-        print('Predicted best path: ' + str([i2state[i] for i in best_path]) + '\n')
-
+        print('Predicted best path: ' + str([i2state[i] for i in best_sequence]) + '\n')
 
 
 def load_data():
@@ -75,6 +72,7 @@ def load_data():
     ):
         raise ImportError("Training and/or test sets not found.")
     else:
+        generate_train_data()
         train_data = open(TRAIN_PATH, "r")
         test_data = open(TEST_PATH, "r")
 
@@ -99,7 +97,14 @@ def load_data():
 
         print("Training and test sets imported successfully.")
 
-
     return test_set, training_set
+
+
+def generate_train_data():
+    raise NotImplementedError
+
+
+def generate_test_observations():
+    raise NotImplementedError
 
 main()
